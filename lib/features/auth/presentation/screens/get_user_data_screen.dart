@@ -37,7 +37,6 @@ class _GetUserDataScreenState extends State<GetUserDataScreen> {
       final token = await storage.read(key: 'token');
       if (token != null) {
         final decoded = decodeJwt(token);
-        print('decoded:$decoded');
         setState(() {
           userId = decoded['id'];
           userName = decoded['name'];
@@ -49,9 +48,7 @@ class _GetUserDataScreenState extends State<GetUserDataScreen> {
         });
         _loadUserData(decoded['id']);
       }
-    } catch (e) {
-      print('Error decoding token: $e');
-    }
+    } catch (e) {}
   }
 
   Future<void> _loadUserData(String userId) async {

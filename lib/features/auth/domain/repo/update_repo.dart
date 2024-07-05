@@ -35,8 +35,6 @@ class UpdateRepo {
 
     // Print the response body and status code
     // Print the response body and status code
-    print("Response update Body: ${response.body}");
-    print("Status update Code: ${response.statusCode}");
 
     if (response.statusCode == 202) {
       return [response.body, response.statusCode];

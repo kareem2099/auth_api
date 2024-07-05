@@ -34,8 +34,6 @@ class RegisterRepo {
     final response = await http.Response.fromStream(streamedResponse);
 
     // Print the response body and status code
-    print("Response reg Body: ${response.body}");
-    print("Status reg Code: ${response.statusCode}");
 
     try {
       final responseBody = jsonDecode(response.body);
@@ -44,7 +42,6 @@ class RegisterRepo {
         'statusCode': response.statusCode,
       };
     } catch (e) {
-      print("Error decoding response: $e");
       return {
         'body': 'An unexpected error occurred',
         'statusCode': response.statusCode,

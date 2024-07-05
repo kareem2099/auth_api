@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:auth_api/features/auth/presentation/bloc/user_cubit.dart';
 import 'package:auth_api/features/auth/presentation/component/permission_handler.dart';
 import 'package:auth_api/features/auth/presentation/screens/login_screen.dart';
 import 'package:flutter/material.dart';
@@ -139,8 +140,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         Placemark place = placemarks.first;
         setState(() {
           locationNameController.text = place.country ?? '';
-          addressController.text =
-              '${place.street}, ${place.locality}, ${place.country}';
+          addressController.text = ' ${place.locality}';
           coordinatesController.text =
               '${position.latitude}, ${position.longitude}';
         });
@@ -197,6 +197,16 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               ),
             );
           } else if (state is AuthenticationSuccess) {
+            //Emit user data to UserCubit
+            final userCubit = context.read<UserCubit> ();
+            userCubit.updateUser(
+              name: nameController.text,
+              phone: phoneController.text,
+              locationName: locationNameController.text,
+              locationAddress: addressController.text,
+              locationCoordination: coordinatesController.text,
+              imageUrl: _profileImage?.path ?? '',
+            );
             Navigator.pushReplacementNamed(context, LoginScreen.routeName);
           }
         },

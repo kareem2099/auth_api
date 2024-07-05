@@ -5,6 +5,8 @@ import 'package:auth_api/features/auth/presentation/component/permission_handler
 import 'package:auth_api/features/auth/presentation/component/secure_storage_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 import '../bloc/auth_bloc.dart';
 import '../component/text_form_field.dart';
@@ -48,6 +50,36 @@ class _UpdateUserScreenState extends State<UpdateUserScreen> {
   final StreamController<String> locCoorValidationController =
       StreamController<String>.broadcast();
 
+  @override
+  void initState() {
+    super.initState();
+    _getCurrentLocation();
+  }
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    phoneController.dispose();
+    locationNameController.dispose();
+    addressController.dispose();
+    coordinatesController.dispose();
+    nameFocusNode.dispose();
+    emailFocusNode.dispose();
+    phoneFocusNode.dispose();
+    passwordFocusNode.dispose();
+    confPasswordFocusNode.dispose();
+    locNameFocusNode.dispose();
+    locAdressFocusNode.dispose();
+    locCoorFocusNode.dispose();
+    emailValidationController.close();
+    nameValidationController.close();
+    phoneValidationController.close();
+    locNameValidationController.close();
+    locAdressValidationController.close();
+    locCoorValidationController.close();
+    super.dispose();
+  }
+
   Future<void> _pickImage() async {
     bool hasPermission = await PermissionHandlerUtil.requestStoragePermission();
 
@@ -66,6 +98,50 @@ class _UpdateUserScreenState extends State<UpdateUserScreen> {
           title: const Text('Storage Permission Required'),
           content: const Text(
               'This app needs storage access to upload images. Please grant the permission.'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                PermissionHandlerUtil.openAppSettings();
+              },
+              child: const Text('Settings'),
+            ),
+          ],
+        ),
+      );
+    }
+  }
+
+  Future<void> _getCurrentLocation() async {
+    bool hasPermission =
+        await PermissionHandlerUtil.requestLocationPermission();
+
+    if (hasPermission) {
+      Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
+      List<Placemark> placemarks =
+          await placemarkFromCoordinates(position.latitude, position.longitude);
+
+      if (placemarks.isNotEmpty) {
+        Placemark place = placemarks.first;
+        setState(() {
+          locationNameController.text = place.country ?? '';
+          addressController.text = ' ${place.locality}';
+          coordinatesController.text =
+              '${position.latitude}, ${position.longitude}';
+        });
+      }
+    } else {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Location Permission Required'),
+          content: const Text(
+              'This app needs location access to auto-fill your location details. Please grant the permission.'),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),

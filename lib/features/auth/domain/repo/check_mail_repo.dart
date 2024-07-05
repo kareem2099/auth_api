@@ -10,8 +10,6 @@ class CheckMailRepo {
     });
 
     // Print the response body and status code// Print the response body and status code
-    print("Response check mail Body: ${response.body}");
-    print("Status check mail Code: ${response.statusCode}");
 
     if (response.statusCode == 200) {
       return [response.body, response.statusCode];

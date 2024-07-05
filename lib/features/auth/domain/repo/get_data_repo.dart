@@ -9,9 +9,8 @@ class GetUserRepo {
         await apiBase.getRequest('${ApiConstants.getUser}/$userId');
 
     // Print the response body and status code
-    // Print the response body and status code
-    print("Response get user data Body: ${response.body}");
-    print("Status get user data Code: ${response.statusCode}");
+    print("Response get data Body: ${response.body}");
+    print("Status get data Code: ${response.statusCode}");
 
     if (response.statusCode == 202) {
       return [response.body, response.statusCode];

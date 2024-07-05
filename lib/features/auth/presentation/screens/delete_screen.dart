@@ -8,7 +8,7 @@ class DeleteUserScreen extends StatelessWidget {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   static const String routeName = '/delete';
 
-  DeleteUserScreen({super.key});
+  DeleteUserScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +21,23 @@ class DeleteUserScreen extends StatelessWidget {
               SnackBar(content: Text(state.message)),
             );
           } else if (state is UserDeleteSuccess) {
-            Navigator.pushReplacementNamed(context, '/login');
+            // Show a confirmation dialog before navigating to login page
+            showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                title: const Text('Account Deleted'),
+                content: const Text('All your data has been removed.'),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context); // Close the dialog
+                      Navigator.pushReplacementNamed(context, '/login');
+                    },
+                    child: const Text('OK'),
+                  ),
+                ],
+              ),
+            );
           }
         },
         child: Padding(
@@ -49,8 +65,33 @@ class DeleteUserScreen extends StatelessWidget {
                 ElevatedButton(
                   onPressed: () {
                     if (_formKey.currentState?.validate() ?? false) {
-                      BlocProvider.of<AuthenticationBloc>(context).add(
-                        DeleteUserEvent(userId: userIdController.text),
+                      // Show a confirmation dialog before deleting the account
+                      showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: const Text('Confirm Deletion'),
+                          content: const Text(
+                              'Are you sure you want to delete your account?'),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pop(context); // Close the dialog
+                                BlocProvider.of<AuthenticationBloc>(context)
+                                    .add(
+                                  DeleteUserEvent(
+                                      userId: userIdController.text),
+                                );
+                              },
+                              child: const Text('Yes'),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pop(context); // Close the dialog
+                              },
+                              child: const Text('Cancel'),
+                            ),
+                          ],
+                        ),
                       );
                     }
                   },

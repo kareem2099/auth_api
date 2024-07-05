@@ -18,8 +18,6 @@ class LogoutRepo {
 
     // Print the response body and status code
     // Print the response body and status code
-    print("Response logout Body: ${response.body}");
-    print("Status logout Code: ${response.statusCode}");
 
     if (response.statusCode == 200) {
       await _secureStorage.deleteAll();

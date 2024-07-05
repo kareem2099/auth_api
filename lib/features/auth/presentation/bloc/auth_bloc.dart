@@ -142,10 +142,10 @@ class AuthenticationBloc
     final res = await deleteRepo.deleteUser(event.userId);
     // Print the user ID
 
-    if (res[1] == 200) {
+    if (res[1] == 202) {
       emit(UserDeleteSuccess());
-    } else if (res[1] == 400) {
-      emit(const UserDeleteError(message: "Invalid user ID"));
+    } else if (res[1] == 404) {
+      emit(const UserDeleteError(message: "In-valid user"));
     } else {
       emit(const UserDeleteError(
           message: "The service is currently unavailable, please try again."));

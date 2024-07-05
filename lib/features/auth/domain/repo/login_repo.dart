@@ -13,8 +13,6 @@ class LoginRepo {
     });
 
     // Print the response body and status code
-    print("Response login Body: ${response.body}");
-    print("Status login Code: ${response.statusCode}");
 
     try {
       final responseBody = jsonDecode(response.body);
@@ -23,7 +21,6 @@ class LoginRepo {
         'statusCode': response.statusCode,
       };
     } catch (e) {
-      print("Error decoding response: $e");
       return {
         'body': 'An unexpected error occurred',
         'statusCode': response.statusCode,
